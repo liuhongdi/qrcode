@@ -26,11 +26,8 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 /**
- * 二维码生成解析工具类
- * @author 程就人生
- * @date 2019年7月27日
- * @Description
- *
+ * 二维码工具类
+ * by liuhongdi
  */
 public class QrCodeUtil {
 
@@ -51,11 +48,10 @@ public class QrCodeUtil {
      * 生成二维码图片
      * @param content 二维码内容
      * @param logoPath 图片地址
-     * @param needCompress 是否压缩
      * @return
      * @throws Exception
      */
-    private static BufferedImage createImage(String content, String logoPath, boolean needCompress) throws Exception {
+    private static BufferedImage createImage(String content, String logoPath) throws Exception {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         hints.put(EncodeHintType.CHARACTER_SET, UNICODE);
@@ -74,7 +70,7 @@ public class QrCodeUtil {
             return image;
         }
         // 插入图片
-        QrCodeUtil.insertImage(image, logoPath, needCompress);
+        QrCodeUtil.insertImage(image, logoPath);
         return image;
     }
 
@@ -85,7 +81,7 @@ public class QrCodeUtil {
      * @param needCompress 是否压缩
      * @throws Exception
      */
-    private static void insertImage(BufferedImage source, String logoPath, boolean needCompress) throws Exception {
+    private static void insertImage(BufferedImage source, String logoPath) throws Exception {
         File file = new File(logoPath);
         if (!file.exists()) {
             throw new Exception("logo file not found.");
@@ -93,7 +89,6 @@ public class QrCodeUtil {
         Image src = ImageIO.read(new File(logoPath));
         int width = src.getWidth(null);
         int height = src.getHeight(null);
-        if (needCompress) { // 压缩LOGO
             if (width > LOGO_WIDTH) {
                 width = LOGO_WIDTH;
             }
@@ -106,7 +101,6 @@ public class QrCodeUtil {
             g.drawImage(image, 0, 0, null); // 绘制缩小后的图
             g.dispose();
             src = image;
-        }
         // 插入LOGO
         Graphics2D graph = source.createGraphics();
         int x = (QRCODE_WIDTH - width) / 2;
@@ -124,12 +118,11 @@ public class QrCodeUtil {
      * @param content 二维码的内容
      * @param logoPath 中间图片地址
      * @param destPath 存储路径
-     * @param needCompress 是否压缩
      * @return
      * @throws Exception
      */
-    public static String save(String content, String logoPath, String destPath,boolean needCompress) throws Exception {
-        BufferedImage image = QrCodeUtil.createImage(content, logoPath, needCompress);
+    public static String save(String content, String logoPath, String destPath) throws Exception {
+        BufferedImage image = QrCodeUtil.createImage(content, logoPath);
         File file = new File(destPath);
         String path = file.getAbsolutePath();
         File filePath = new File(path);
@@ -146,21 +139,11 @@ public class QrCodeUtil {
     }
 
     //生成二维码图片，直接输出到OutputStream
-    public static void encode(String content, String logoPath, OutputStream output, boolean needCompress)
+    public static void encode(String content, String logoPath, OutputStream output)
             throws Exception {
-        BufferedImage image = QrCodeUtil.createImage(content, logoPath, needCompress);
+        BufferedImage image = QrCodeUtil.createImage(content, logoPath);
         ImageIO.write(image, FORMAT, output);
     }
-
-    /*
-    //创建文件夹， mkdirs会自动创建多层目录，区别于mkdir．(mkdir如果父目录不存在则会抛出异常)
-    public static void mkdirs(String destPath) {
-        File file = new File(destPath);
-        if (!file.exists() && !file.isDirectory()) {
-            file.mkdirs();
-        }
-    }
-    */
 
     //解析二维码图片，得到包含的内容
     public static String decode(String path) throws Exception {
@@ -177,17 +160,4 @@ public class QrCodeUtil {
         result = new MultiFormatReader().decode(bitmap, hints);
         return result.getText();
     }
-
-    //测试
-    public static void main(String[] args) throws Exception {
-        /*
-        String text = "http://localhost:8001/login/aaa?bbb=ccc";
-        //不含Logo
-        QrCodeUtil.encode(text, null, "D:\\cc\\", "qrcode", true);
-        //含Logo，指定二维码图片名
-        QrCodeUtil.encode(text, "D:\\cloudfish\\app\\aa.jpg", "d:\\cc\\", "qrcode1", true);
-        System.out.println(QrCodeUtil.decode("d:\\cc\\qrcode1.jpg"));
-        */
-    }
-
 }
