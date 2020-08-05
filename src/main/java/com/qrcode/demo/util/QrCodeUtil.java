@@ -35,22 +35,18 @@ public class QrCodeUtil {
     private static final String UNICODE = "utf-8";
     //图片格式
     private static final String FORMAT = "JPG";
-    //二维码宽度,单位：像素pixels
+    //二维码宽度像素pixels数量
     private static final int QRCODE_WIDTH = 300;
-    //二维码高度,单位：像素pixels
+    //二维码高度像素pixels数量
     private static final int QRCODE_HEIGHT = 300;
-    //LOGO宽度,单位：像素pixels
+    //LOGO宽度像素pixels数量
     private static final int LOGO_WIDTH = 100;
-    //LOGO高度,单位：像素pixels
+    //LOGO高度像素pixels数量
     private static final int LOGO_HEIGHT = 100;
 
-    /**
-     * 生成二维码图片
-     * @param content 二维码内容
-     * @param logoPath 图片地址
-     * @return
-     * @throws Exception
-     */
+    //生成二维码图片
+    //content 二维码内容
+    //logoPath 图片地址
     private static BufferedImage createImage(String content, String logoPath) throws Exception {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
@@ -74,13 +70,9 @@ public class QrCodeUtil {
         return image;
     }
 
-    /**
-     * 插入LOGO
-     * @param source 二维码图片
-     * @param logoPath LOGO图片地址
-     * @param needCompress 是否压缩
-     * @throws Exception
-     */
+    //在图片上插入LOGO
+    //source 二维码图片内容
+    //logoPath LOGO图片地址
     private static void insertImage(BufferedImage source, String logoPath) throws Exception {
         File file = new File(logoPath);
         if (!file.exists()) {
@@ -112,15 +104,10 @@ public class QrCodeUtil {
         graph.dispose();
     }
 
-    /**
-     * 生成二维码(内嵌LOGO),保存到指定的路径下的文件名
-     * 调用者指定二维码文件名
-     * @param content 二维码的内容
-     * @param logoPath 中间图片地址
-     * @param destPath 存储路径
-     * @return
-     * @throws Exception
-     */
+    //生成带logo的二维码图片，保存到指定的路径
+    // content 二维码内容
+    // logoPath logo图片地址
+    // destPath 生成图片的存储路径
     public static String save(String content, String logoPath, String destPath) throws Exception {
         BufferedImage image = QrCodeUtil.createImage(content, logoPath);
         File file = new File(destPath);
@@ -130,7 +117,6 @@ public class QrCodeUtil {
             filePath.mkdirs();
         }
         String fileName = file.getName();
-        //文件名称通过传递
         fileName = fileName.substring(0, fileName.indexOf(".")>0?fileName.indexOf("."):fileName.length())
                 + "." + FORMAT.toLowerCase();
         System.out.println("destPath:"+destPath);

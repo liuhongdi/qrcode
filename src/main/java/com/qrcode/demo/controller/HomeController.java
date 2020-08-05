@@ -49,4 +49,19 @@ public class HomeController {
         }
         return "文件已保存";
     }
+
+    //解析二维码中的文字
+    @RequestMapping("/qrtext")
+    @ResponseBody
+    public String qrtext() {
+        //String requestUrl = "http://www.baidu.com";
+        String url = "";
+        try {
+             url = QrCodeUtil.decode("/data/springboot2/qrcode2.jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "解析到的url:"+url;
+    }
+
 }
